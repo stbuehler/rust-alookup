@@ -41,9 +41,11 @@ fn exit(code: ExitCode) -> ! {
 	sys_exit(code as i32)
 }
 
+// resolve A or AAAA for `name` and print found addresses
 fn run<R: AddressRecord>(resolver: &mut Resolver, name: &OsStr) {
 	match resolver.query(name.as_bytes(), Class::IN, R::get_record_type()) {
 		Ok(mut response) => {
+			// extract all A/AAAA records from the answer section and print them
 			for answer in response.records::<R>(Section::Answer) {
 				match answer {
 					Err(e) => {

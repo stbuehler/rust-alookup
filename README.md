@@ -2,14 +2,47 @@
 [![crates.io](https://img.shields.io/crates/v/alookup.svg)](https://crates.io/crates/alookup)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
+# alookup
+
 Lookup IPv4 and IPv6 addresses for a hostname. Only prints addresses on
 `stdout` (one per line), errors to `stderr`, and hard errors can be
 detected through inspecting the exit code.
 
+It uses the [`resolv`] crate (specifically the [`query`] method), which
+uses `libresolv.so` which is typically configured via `/etc/resolv.conf`
+to do DNS resolution.
+
+[`resolv`]: https://crates.io/crates/resolv
+[`query`]: https://mikedilger.github.io/resolv-rs/resolv/struct.Resolver.html#method.query
+
+## Install
+
 Install from [`crates.io`](https://crates.io/crates/alookup) with
 `cargo install alookup`.
 
-Exit codes:
+## Using it
+
+### Examples
+
+	alookup mail.google.com
+
+
+### Usage
+
+	alookup [FLAGS] <NAME>
+
+	FLAGS:
+
+	    -4               Query only IPv4 records (A)
+	    -6               Query only IPv6 records (AAAA)
+	    -h, --help       Prints help information
+	    -V, --version    Prints version information
+
+	ARGS:
+
+	    <NAME>    Name to lookup
+
+### Exit codes
 
 - `0`: success (or `NODATA`).  You might want to treat an empty address
   set (no output) as failure too (similar to `NXDOMAIN`).
