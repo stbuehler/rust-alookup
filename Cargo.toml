@@ -1,0 +1,18 @@
+[package]
+name = "alookup"
+version = "0.1.0"
+authors = ["Stefan Bühler <stbuehler@web.de>"]
+description = "Lookup IPv4 and IPv6 addresses for a hostname."
+homepage = "https://github.com/stbuehler/rust-alookup"
+repository = "https://github.com/stbuehler/rust-alookup"
+categories = ["network-programming"]
+keywords = ["dns", "lookup", "resolv", "network"]
+readme = "README.md"
+license = "MIT"
+
+[badges]
+travis-ci = { repository = "stbuehler/rust-alookup" }
+
+[dependencies]
+resolv = "0.1.4"
+clap = "2.32.0"
