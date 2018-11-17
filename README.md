@@ -6,6 +6,9 @@ Lookup IPv4 and IPv6 addresses for a hostname. Only prints addresses on
 `stdout` (one per line), errors to `stderr`, and hard errors can be
 detected through inspecting the exit code.
 
+Install from [`crates.io`](https://crates.io/crates/alookup) with
+`cargo install alookup`.
+
 Exit codes:
 
 - `0`: success (or `NODATA`).  You might want to treat an empty address
