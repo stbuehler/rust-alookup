@@ -42,11 +42,15 @@ fn exit(code: ExitCode) -> ! {
 }
 
 // resolve A or AAAA for `name` and print found addresses
-fn run<R: AddressRecord>(resolver: &mut Resolver, name: &OsStr) {
+fn run<R>(resolver: &mut Resolver, name: &OsStr, sort: bool)
+where
+	R: AddressRecord,
+	R::Address: Ord,
+{
 	match resolver.query(name.as_bytes(), Class::IN, R::get_record_type()) {
 		Ok(mut response) => {
 			// extract all A/AAAA records from the answer section and print them
-			for answer in response.records::<R>(Section::Answer) {
+			let addresses = response.records::<R>(Section::Answer).map(|answer| {
 				match answer {
 					Err(e) => {
 						eprintln!(
@@ -55,9 +59,19 @@ fn run<R: AddressRecord>(resolver: &mut Resolver, name: &OsStr) {
 						);
 						exit(ExitCode::RecordFailure);
 					},
-					Ok(answer) => {
-						println!("{}", answer.data.address());
-					},
+					Ok(answer) => answer.data.address(),
+				}
+			});
+			if sort {
+				let mut addresses = addresses.collect::<Vec<_>>();
+				addresses.sort();
+				addresses.dedup();
+				for address in addresses {
+					println!("{}", address);
+				}
+			} else {
+				for address in addresses {
+					println!("{}", address);
 				}
 			}
 		},
@@ -85,6 +99,7 @@ fn main() {
 		(about: crate_description!())
 		(@arg IPv4: short("4") conflicts_with("IPv6") "Query only IPv4 records (A)")
 		(@arg IPv6: short("6") "Query only IPv6 records (AAAA)")
+		(@arg SORT: -s --sort "Sort (and deduplicate) addresses")
 		(@arg NAME: +required "Name to lookup")
 	)
 	.after_help(
@@ -107,6 +122,7 @@ printed to stderr there should be a non-zero exit code.
 
 	let ipv4_only = matches.is_present("IPv4");
 	let ipv6_only = matches.is_present("IPv6");
+	let sort = matches.is_present("SORT");
 	let name = matches.value_of_os("NAME").unwrap();
 
 	let mut resolver = Resolver::new().unwrap_or_else(|| {
@@ -115,11 +131,11 @@ printed to stderr there should be a non-zero exit code.
 	});
 
 	if !ipv6_only {
-		run::<A>(&mut resolver, name);
+		run::<A>(&mut resolver, name, sort);
 	}
 
 	if !ipv4_only {
-		run::<AAAA>(&mut resolver, name);
+		run::<AAAA>(&mut resolver, name, sort);
 	}
 
 	exit(ExitCode::Success);
