@@ -78,7 +78,8 @@ fn run<R: AddressRecord>(resolver: &mut Resolver, name: &OsStr) {
 }
 
 fn main() {
-	let app = clap_app!(("lookup") =>
+	let app = clap_app!(
+		@app (clap::App::new(crate_name!()))
 		(version: crate_version!())
 		(author: crate_authors!("\n"))
 		(about: crate_description!())
