@@ -1,6 +1,6 @@
 [package]
 name = "alookup"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Stefan Bühler <stbuehler@web.de>"]
 description = "Lookup IPv4 and IPv6 addresses for a hostname."
 homepage = "https://github.com/stbuehler/rust-alookup"
