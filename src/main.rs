@@ -92,18 +92,8 @@ where
 }
 
 fn main() {
-	let app = clap_app!(
-		@app (clap::App::new(crate_name!()))
-		(version: crate_version!())
-		(author: crate_authors!("\n"))
-		(about: crate_description!())
-		(@arg IPv4: short("4") conflicts_with("IPv6") "Query only IPv4 records (A)")
-		(@arg IPv6: short("6") "Query only IPv6 records (AAAA)")
-		(@arg SORT: -s --sort "Sort (and deduplicate) addresses")
-		(@arg NAME: +required "Name to lookup")
-	)
-	.after_help(
-		"Exit codes:
+	let extra_help = format!(
+		"*Exit codes*
 
 - 0: success (or NODATA).  You might want to treat an empty address
   set (no output) as failure too (similar to NXDOMAIN).
@@ -116,8 +106,23 @@ fn main() {
 Other exit codes should be treated as failures too; a non-zero exit code
 always should show an error on stderr, and every time an error is
 printed to stderr there should be a non-zero exit code.
+
+Written by {}.
 ",
+		crate_authors!(", "),
 	);
+
+	let app = clap_app!(
+		@app (clap::App::new(crate_name!()))
+		(version: crate_version!())
+		(about: crate_description!())
+		(@arg IPv4: short("4") conflicts_with("IPv6") "Query only IPv4 records (A)")
+		(@arg IPv6: short("6") "Query only IPv6 records (AAAA)")
+		(@arg SORT: -s --sort "Sort (and deduplicate) addresses")
+		(@arg NAME: +required "Name to lookup")
+		(@setting ColoredHelp)
+	)
+	.after_help(extra_help.as_str());
 	let matches = app.get_matches();
 
 	let ipv4_only = matches.is_present("IPv4");
