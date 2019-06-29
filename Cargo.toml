@@ -1,6 +1,6 @@
 [package]
 name = "alookup"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Stefan Bühler <stbuehler@web.de>"]
 description = "Lookup IPv4 and IPv6 addresses for a hostname."
 edition = "2018"
