@@ -117,7 +117,14 @@ printed to stderr there should be a non-zero exit code.
 		(@arg IPv4: short("4") conflicts_with("IPv6") "Query only IPv4 records (A)")
 		(@arg IPv6: short("6") "Query only IPv6 records (AAAA)")
 		(@arg SORT: -s --sort "Sort (and deduplicate) addresses")
-		(@arg NAME: +required "Name to lookup")
+		(@group operation +required =>
+			(@arg COMPLETION:
+				long("generate-completion") [SHELL]
+				possible_values(&clap::Shell::variants())
+				"Generate shell completion on stdout"
+			)
+			(@arg NAME: "Name to lookup")
+		)
 		(@setting ColoredHelp)
 	)
 	.after_help(extra_help)
@@ -125,6 +132,13 @@ printed to stderr there should be a non-zero exit code.
 
 fn main() {
 	let matches = app().get_matches();
+
+	if matches.is_present("COMPLETION") {
+		use clap::value_t_or_exit;
+		let shell = value_t_or_exit!(matches, "COMPLETION", clap::Shell);
+		app().gen_completions_to(clap::crate_name!(), shell, &mut std::io::stdout());
+		return;
+	}
 
 	let ipv4_only = matches.is_present("IPv4");
 	let ipv6_only = matches.is_present("IPv6");
