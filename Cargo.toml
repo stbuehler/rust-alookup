@@ -3,6 +3,7 @@ name = "alookup"
 version = "0.1.1"
 authors = ["Stefan Bühler <stbuehler@web.de>"]
 description = "Lookup IPv4 and IPv6 addresses for a hostname."
+edition = "2018"
 homepage = "https://github.com/stbuehler/rust-alookup"
 repository = "https://github.com/stbuehler/rust-alookup"
 categories = ["network-programming"]

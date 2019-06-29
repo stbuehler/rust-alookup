@@ -1,7 +1,3 @@
-#[macro_use]
-extern crate clap;
-extern crate resolv;
-
 mod resolv_ext;
 
 use resolv::{
@@ -18,7 +14,7 @@ use resolv::{
 	Section,
 };
 
-use resolv_ext::{
+use crate::resolv_ext::{
 	AddressRecord,
 	ResponseExt,
 };
@@ -91,9 +87,8 @@ where
 	}
 }
 
-fn main() {
-	let extra_help = format!(
-		"*Exit codes*
+fn app() -> clap::App<'static, 'static> {
+	let extra_help = "*Exit codes*
 
 - 0: success (or NODATA).  You might want to treat an empty address
   set (no output) as failure too (similar to NXDOMAIN).
@@ -106,24 +101,30 @@ fn main() {
 Other exit codes should be treated as failures too; a non-zero exit code
 always should show an error on stderr, and every time an error is
 printed to stderr there should be a non-zero exit code.
+";
 
-Written by {}.
-",
-		crate_authors!(", "),
-	);
-
-	let app = clap_app!(
-		@app (clap::App::new(crate_name!()))
-		(version: crate_version!())
-		(about: crate_description!())
+	// clap not edition 2018 yet, need to import clap macros so they can
+	// be used by other clap macros
+	use clap::{
+		clap_app,
+		crate_name,
+		crate_version,
+		crate_authors,
+		crate_description,
+	};
+	clap_app!(
+		@app (clap::app_from_crate!(", "))
 		(@arg IPv4: short("4") conflicts_with("IPv6") "Query only IPv4 records (A)")
 		(@arg IPv6: short("6") "Query only IPv6 records (AAAA)")
 		(@arg SORT: -s --sort "Sort (and deduplicate) addresses")
 		(@arg NAME: +required "Name to lookup")
 		(@setting ColoredHelp)
 	)
-	.after_help(extra_help.as_str());
-	let matches = app.get_matches();
+	.after_help(extra_help)
+}
+
+fn main() {
+	let matches = app().get_matches();
 
 	let ipv4_only = matches.is_present("IPv4");
 	let ipv6_only = matches.is_present("IPv6");
