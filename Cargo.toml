@@ -15,4 +15,4 @@ travis-ci = { repository = "stbuehler/rust-alookup" }
 
 [dependencies]
 resolv = "0.1.4"
-clap = "2.32.0"
+clap = "2.33.0"
