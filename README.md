@@ -35,6 +35,7 @@ Install from [`crates.io`](https://crates.io/crates/alookup) with
 
 	    -4               Query only IPv4 records (A)
 	    -6               Query only IPv6 records (AAAA)
+	    -s, --sort       Sort (and deduplicate) addresses
 	    -h, --help       Prints help information
 	    -V, --version    Prints version information
 
